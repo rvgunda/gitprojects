@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="aa90bb48-ea73-434d-b5b1-332eed08ba88" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="b1ade842-7b5b-4022-9a67-99c16648a6fe">
+		<vm:queues >
+			<vm:queue queueName="simpleq" />
+		</vm:queues>
+	</vm:config>
+	<flow name="vmFlow" doc:id="2898a67f-70d3-4c95-b1ba-3bd0d11e7485" >
+		<http:listener doc:name="Listener" doc:id="7c37ea58-e15b-4457-b473-47a0ace09d32" config-ref="HTTP_Listener_config" path="vm"/>
+		<vm:consume doc:id="6c692595-209f-4d3e-a2c5-8b06f326bbad" config-ref="VM_Config" queueName="simpleq" timeoutUnit="MINUTES" timeout="1"/>
+	</flow>
+	<flow name="vmFlow1" doc:id="d5967f1f-01b5-4123-abc5-65ff61620533" >
+		<vm:listener queueName="simpleq" doc:name="Listener" doc:id="7a38f769-fe7d-4daa-9d14-e7efa5459a19" config-ref="VM_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6cea024e-3509-4956-9ea2-6ee933e77796" message="#[payload]"/>
+	</flow>
+</mule>
